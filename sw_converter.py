@@ -23,7 +23,7 @@ VOUT = 5.0  # Output voltage in V
 n = 0.85  # Efficiency factor (85%)
 fsw = 3.8e6  # Switching frequency in Hz (3.8 MHz)
 L = 0.56e-6  # Inductance in H (0.56 µH)
-Iout = 1.5  # Output current in A
+Iout = 1  # Output current in A
 
 IL_peak = calculate_peak_current(VIN, VOUT, n, fsw, L, Iout)
 print(f"Inductor Peak Current: {IL_peak:.3f} A")
