@@ -1,0 +1,60 @@
+import numpy as np
+
+# Calculation of Two-Wire Line
+def cal_two_wire_params (d: float,          # Radius of each conductor
+                         D: float,          # Center-to-center distance between the two conductors
+                         epsilon_r: float,  # Relative Permittivity (dielectric constant) = 1 in air
+                         mu: float,         # Magnetic permeability of the medium (mu_0 for air)
+                         mu_r: float,       # Relative Magnetic Permeability of the conductor
+                         sigma_c: float,    # Electrical Conductivity of conductor
+                         length: float,     # Length of the cable
+                         freq: float) -> dict:
+    
+    # Constants
+    epsilon_0 = 8.854e-12 # Vacuum permittivity (F/m)
+    epsilon = epsilon_0 * epsilon_r
+    mu_0 = 4 * np.pi * 1e-7 # Vacuum permeability (H/m)
+    mu_c = mu_0 * mu_r
+
+    # Calculate surface resistance (due to skin effect)
+    Rs = np.sqrt(np.pi * freq * mu_c / sigma_c)
+    # Calculate the unit resistance
+    R_per_m = 2 * Rs / (np.pi * d)
+
+    # Calculate the unit inductance
+    L_per_m = mu/np.pi * np.log(D/d + np.sqrt((D/d)**2 - 1))
+
+    # Calculate the unit capacitance
+    C_per_m = np.pi * epsilon / np.log((D/d) + np.sqrt((D/d)**2 - 1))
+
+    R = R_per_m * length
+    L = L_per_m * length
+    C = C_per_m * length
+
+    return {
+        "R": R,
+        "L": L,
+        "C": C
+    }
+
+if __name__ == "__main__":
+    # Define parameters
+    
+    # Parameters for the 14-gauge two-wire transmission line
+    d = 0.000813            # Radius of each conductor (14 AWG)
+    D = 0.02                # Center-to-center distance between the two conductors
+    epsilon_r = 1           # Relative Permittivity (air)
+    mu = 4 * np.pi * 1e-7   # Magnetic permeability of the medium (mu_0 for air)
+    mu_r = 1                # Relative Magnetic Permeability of the conductor (copper)
+    sigma_c = 5.8e7         # Electrical Conductivity of conductor (copper)
+    length = 2500           # Length of the cable (meters)
+    freq = 60               # Frequency (Hz)
+
+
+    
+    params = cal_two_wire_params(d, D, epsilon_r, mu, mu_r, sigma_c, length, freq)
+
+    # Print out results
+    for key, value in params.items():
+        print(f"{key}: {value:.6e}")
+
